@@ -22,6 +22,10 @@ RUN  mkdir -p /var/www/static/ \
 
 COPY . .
 
+RUN python manage.py migrate --fake \
+    && python manage.py collectstatic --noinput \
+    && echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('admin', 'admin@example.com', 'admin')" | python manage.py shell
+
 EXPOSE 8000
 
 ENTRYPOINT ["uwsgi", "--strict", "--ini", "uwsgi.ini"]
