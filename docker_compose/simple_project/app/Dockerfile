@@ -1,4 +1,4 @@
-FROM python:3.12-slim 
+FROM python:3.10 
 # бло 3.10
 
 WORKDIR /opt/app
@@ -14,6 +14,11 @@ COPY run_uwsgi.sh run_uwsgi.sh
 COPY requirements.txt requirements.txt
 COPY uwsgi/uwsgi.ini uwsgi.ini
 
+RUN apt-get update && \
+    apt-get install -y libpcre3 libpcre3-dev && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 RUN  mkdir -p /var/www/static/ \
      && mkdir -p /var/www/media/ \
      && mkdir -p /opt/app/static/ \
@@ -23,10 +28,9 @@ RUN  mkdir -p /var/www/static/ \
 
 COPY . .
 
-RUN python manage.py migrate --fake \
-    && python manage.py collectstatic --noinput \
-    && echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('admin', 'admin@example.com', 'admin')" | python manage.py shell
+RUN ls -la /opt/app
 
 EXPOSE 8000
 
-ENTRYPOINT ["uwsgi", "--strict", "--ini", "uwsgi.ini"]
+ENTRYPOINT ["sh", "-c", "cd /opt/app && uwsgi --strict --ini uwsgi.ini"]
+# ENTRYPOINT ["uwsgi", "--strict", "--ini", "uwsgi.ini"]

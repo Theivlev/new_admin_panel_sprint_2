@@ -2,16 +2,23 @@ version: '3'
 services:
 
   service:
+    container_name: service
     build: ./docker_compose/simple_project/app
-    depends_on:
-      - db
-    expose:
-      - "8000"
+    ports:
+      - "8000:8000"
     env_file:
       - ./.env
+    depends_on:
+      - theatre-db
     volumes:
       - static_value:/opt/app/static/
       - media_value:/opt/app/media/
+    command: >
+      sh -c "
+      python manage.py migrate --fake &&
+      python manage.py collectstatic --noinput &&
+      echo \"from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('admin', 'admin@example.com', 'admin')\" | python manage.py shell
+      "
 
   nginx:
     image: nginx:latest
@@ -31,14 +38,13 @@ services:
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=qwerty1234
+      - POSTGRES_USER=theivlev
       - POSTGRES_DB=project_collection
     restart: always
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./database_dump.sql:/docker-entrypoint-initdb.d/init.sql
-
+      - ./docker_compose/simple_project/database/database_dump.sql:/docker-entrypoint-initdb.d/init.sql
 
 volumes:
   postgres_data:
