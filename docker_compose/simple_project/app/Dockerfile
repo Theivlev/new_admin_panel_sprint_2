@@ -1,4 +1,5 @@
-FROM python:3.10
+FROM python:3.12-slim 
+# бло 3.10
 
 WORKDIR /opt/app
 
