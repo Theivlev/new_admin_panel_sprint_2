@@ -1,7 +1,7 @@
 CREATE SCHEMA IF NOT EXISTS content;
 
 
-ALTER SCHEMA content OWNER TO theivlev;
+ALTER SCHEMA content OWNER TO postgres;
 
 SET default_tablespace = '';
 

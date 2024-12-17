@@ -1,0 +1,50 @@
+version: '3.9'
+services:
+
+  service:
+    build: app
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./.env
+    depends_on:
+      - theatre-db
+    volumes:
+      - static_volume:/opt/app/static/
+      - media_volume:/opt/app/media/
+    command: >
+      sh -c "
+      python manage.py migrate --fake || exit 1 &&
+      python manage.py collectstatic --noinput || exit 1 &&
+      echo \"from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('admin', 'admin@example.com', 'admin')\" | python manage.py shell || exit 1
+      "
+
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ../nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ../nginx/configs/site.conf:/etc/nginx/conf.d/site.conf:ro
+      - static_volume:/data/static
+      - media_volume:/data/media
+    depends_on:
+      - service
+    ports:
+      - "80:80"
+
+  theatre-db:
+    image: postgres:16
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=qwerty1234
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=project_collection
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/database_dump.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:

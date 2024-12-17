@@ -32,5 +32,5 @@ RUN ls -la /opt/app
 
 EXPOSE 8000
 
-ENTRYPOINT ["sh", "-c", "cd /opt/app && uwsgi --strict --ini uwsgi.ini"]
-# ENTRYPOINT ["uwsgi", "--strict", "--ini", "uwsgi.ini"]
+# ENTRYPOINT ["sh", "-c", "cd /opt/app && uwsgi --strict --ini uwsgi.ini"]
+ENTRYPOINT ["uwsgi", "--strict", "--ini", "uwsgi.ini"]
