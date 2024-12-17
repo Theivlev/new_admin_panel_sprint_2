@@ -10,20 +10,15 @@ services:
     depends_on:
       - theatre-db
     volumes:
-      - static_volume:/opt/app/static/
-      - media_volume:/opt/app/media/
-    command: >
-      sh -c "
-      python manage.py migrate --fake || exit 1 &&
-      python manage.py collectstatic --noinput || exit 1 &&
-      echo \"from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('admin', 'admin@example.com', 'admin')\" | python manage.py shell || exit 1
-      "
+      - static_volume:/opt/app/static
+      - media_volume:/opt/app/media
+  
 
   nginx:
     image: nginx:latest
     volumes:
-      - ../../nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ../../nginx/configs/site.conf:/etc/nginx/conf.d/site.conf:ro
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./configs/:/etc/nginx/conf.d:ro
       - static_volume:/data/static
       - media_volume:/data/media
     depends_on:
