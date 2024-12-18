@@ -27,6 +27,16 @@ class MoviesApiMixin:
             'creation_date'
         )
 
+    def get_persons_by_role(self, role):
+        """
+        Получает список полных имен участников по заданной роли.
+        """
+        return ArrayAgg(
+            'persons__full_name',
+            distinct=True,
+            filter=Q(personfilmwork__role=role)
+        )
+
     def get_queryset(self):
         """
         Возвращает аннотированный набор данных о фильмах.
@@ -36,27 +46,12 @@ class MoviesApiMixin:
             'genres__name',
             distinct=True
         )
-        actors = ArrayAgg(
-            'persons__full_name',
-            distinct=True,
-            filter=Q(personfilmwork__role='actor')
-        )
-        directors = ArrayAgg(
-            'persons__full_name',
-            distinct=True,
-            filter=Q(personfilmwork__role='director')
-        )
-        writers = ArrayAgg(
-            'persons__full_name',
-            distinct=True,
-            filter=Q(personfilmwork__role='writer')
-        )
+        roles = ['actor', 'director', 'writer']
+        annotations = {role: self.get_persons_by_role(role) for role in roles}
 
         return self.queryset.annotate(
             genres=genres,
-            actors=actors,
-            directors=directors,
-            writers=writers
+            **annotations
         )
 
     def render_to_response(self, context, **response_kwargs):
