@@ -6,17 +6,17 @@ from .models import FilmWork, Genre, GenreFilmWork, Person, PersonFilmWork
 
 @admin.register(Genre)
 class GenreAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description', 'created', 'updated_at')
+    list_display = ('name', 'description', 'created')
     search_fields = ('name', 'description')
-    list_filter = ('created', 'updated_at')
+    list_filter = ('created',)
     ordering = ['name']
 
 
 @admin.register(Person)
 class PersonAdmin(admin.ModelAdmin):
-    list_display = ('full_name', 'created', 'updated_at')
+    list_display = ('full_name', 'created')
     search_fields = ('full_name',)
-    list_filter = ('created', 'updated_at')
+    list_filter = ('created',)
     ordering = ['full_name']
 
 
