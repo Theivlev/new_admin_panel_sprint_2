@@ -24,7 +24,7 @@ class MoviesApiMixin:
             'description',
             'rating',
             'type',
-            'creation_date'
+            'created'
         )
 
     def get_persons_by_role(self, role):
