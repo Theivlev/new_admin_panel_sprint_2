@@ -24,7 +24,7 @@ class MoviesApiMixin:
             'description',
             'rating',
             'type',
-            'created'
+            'creation_date'
         )
 
     def get_persons_by_role(self, role):
@@ -47,7 +47,7 @@ class MoviesApiMixin:
             distinct=True
         )
         roles = ['actor', 'director', 'writer']
-        annotations = {role: self.get_persons_by_role(role) for role in roles}
+        annotations = {f"{role}s": self.get_persons_by_role(role) for role in roles}
 
         return self.queryset.annotate(
             genres=genres,
