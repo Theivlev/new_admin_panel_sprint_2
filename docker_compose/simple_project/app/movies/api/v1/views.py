@@ -61,13 +61,22 @@ class MoviesApiMixin:
 class MoviesListApi(MoviesApiMixin, BaseListView):
     model = FilmWork
 
+    def get_paginate_by(self, queryset):
+        return self.request.GET.get('paginate_by', 50)
+
     def get_context_data(self, *, object_list=None, **kwargs):
+        queryset = self.get_queryset()
+        paginator, page, queryset, is_paginated = self.paginate_queryset(queryset, self.get_paginate_by(queryset))
         context = {
-            'results': list(self.get_queryset()),
+            'count': paginator.count,
+            'total_pages': paginator.num_pages,
+            'prev': page.previous_page_number() if page.has_previous() else None,
+            'next': page.next_page_number() if page.has_next() else None,
+            'results': list(queryset),
         }
         return context
 
 
 class MoviesDetailApi(MoviesApiMixin, BaseDetailView):
-    def get_context_data(self, **kwargs):
-        return  # Словарь с данными объекта
+     def get_context_data(self, **kwargs):
+        return kwargs['object']
