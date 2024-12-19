@@ -19,6 +19,8 @@ RUN  mkdir -p /var/www/static/ \
 
 COPY . .
 
+RUN python manage.py migrate && echo "Миграции выполнены!"
+
 RUN python manage.py collectstatic --noinput && echo "Статические файлы собраны!"
 
 RUN ls -la /opt/app
