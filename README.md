@@ -35,26 +35,26 @@
     git clone <название репозитория>
 ```
 
-2. Убедитесь, что на вашем устройстве установлены Docker и Docker Compose.
+2. - Убедитесь, что на вашем устройстве установлены Docker и Docker Compose.
 
-3. Создайте .env файлы на том же уровне .env.example
+3. - Создайте .env файлы на том же уровне .env.example
 
   ```bash
     cp .env.example .env
   ```
 
-4. Постройте и запустите контейнеры с помощью Docker Compose:
+4. - Постройте и запустите контейнеры с помощью Docker Compose:
     ```bash
       docker-compose up --build
      ```
 
-5. Суперюзер
+5. - Суперюзер
 
       login: admin
       password: 123123
    
 
-6. Админ-панель доступна по адресу http://localhost/admin/
+6. - Админ-панель доступна по адресу http://localhost/admin/
 
 ## API документация
 
