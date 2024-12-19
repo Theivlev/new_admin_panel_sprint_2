@@ -47,7 +47,9 @@ class MoviesApiMixin:
             distinct=True
         )
         roles = ['actor', 'director', 'writer']
-        annotations = {f"{role}s": self.get_persons_by_role(role) for role in roles}
+        annotations = {
+            f"{role}s": self.get_persons_by_role(role) for role in roles
+        }
 
         return self.queryset.annotate(
             genres=genres,
