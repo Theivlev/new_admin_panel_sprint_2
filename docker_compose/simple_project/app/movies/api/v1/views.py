@@ -7,9 +7,8 @@ from django.db.models import Q
 from movies.models import FilmWork
 
 
-
 class MoviesApiMixin:
-    
+
     model = FilmWork
     http_method_names = ['get']
 
@@ -67,7 +66,10 @@ class MoviesListApi(MoviesApiMixin, BaseListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         queryset = self.get_queryset()
-        paginator, page, queryset, is_paginated = self.paginate_queryset(queryset, self.get_paginate_by(queryset))
+        paginator, page, queryset, is_paginated = self.paginate_queryset(
+            queryset,
+            self.get_paginate_by(queryset)
+        )
         context = {
             'count': paginator.count,
             'total_pages': paginator.num_pages,
@@ -79,5 +81,6 @@ class MoviesListApi(MoviesApiMixin, BaseListView):
 
 
 class MoviesDetailApi(MoviesApiMixin, BaseDetailView):
-     def get_context_data(self, **kwargs):
+
+    def get_context_data(self, **kwargs):
         return kwargs['object']

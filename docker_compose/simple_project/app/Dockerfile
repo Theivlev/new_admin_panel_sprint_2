@@ -1,16 +1,19 @@
 FROM python:3.10
+
 WORKDIR /opt/app
+
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 ENV UWSGI_PROCESSES 1
 ENV UWSGI_THREADS 16
 ENV UWSGI_HARAKIRI 240
-ENV DJANGO_SETTINGS_MODULE 'example.settings'
-COPY run_uwsgi.sh run_uwsgi.sh
-COPY requirements.txt requirements.txt
-COPY uwsgi/uwsgi.ini uwsgi.ini
+ENV DJANGO_SETTINGS_MODULE example.settings
 
-RUN  mkdir -p /var/www/static/ \
+COPY run_uwsgi.sh /opt/app/run_uwsgi.sh
+COPY requirements.txt requirements.txt
+COPY uwsgi/uwsgi.ini /etc/app/uwsgi.ini
+
+RUN mkdir -p /var/www/static/ \
     && mkdir -p /var/www/media/ \
     && mkdir -p /opt/app/static/ \
     && mkdir -p /opt/app/media/ \
@@ -19,15 +22,11 @@ RUN  mkdir -p /var/www/static/ \
 
 COPY . .
 
-RUN python manage.py migrate && echo "Миграции выполнены!"
 
-RUN python manage.py collectstatic --noinput && echo "Статические файлы собраны!"
+RUN chmod +x /opt/app/run_uwsgi.sh
 
 RUN ls -la /opt/app
 
 EXPOSE 8000
 
-ENTRYPOINT ["uwsgi", "--strict", "--ini", "uwsgi.ini"]
-
-
-# ENTRYPOINT ["sh", "-c", "cd /opt/app && uwsgi --strict --ini uwsgi.ini"]
+ENTRYPOINT ["/opt/app/run_uwsgi.sh"]
