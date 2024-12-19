@@ -22,7 +22,6 @@ RUN mkdir -p /var/www/static/ \
 
 COPY . .
 
-
 RUN chmod +x /opt/app/run_uwsgi.sh
 
 RUN ls -la /opt/app

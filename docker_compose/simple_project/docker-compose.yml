@@ -8,10 +8,11 @@ services:
     env_file:
       - ./.env
     depends_on:
-      - theatre-db
+      - nginx
     volumes:
       - static_volume:/opt/app/static
       - media_volume:/opt/app/media
+    restart: always
   
 
   nginx:
@@ -22,9 +23,10 @@ services:
       - static_volume:/data/static
       - media_volume:/data/media
     depends_on:
-      - service
+      - theatre-db
     ports:
       - "80:80"
+    restart: always
 
   theatre-db:
     image: postgres:16
